@@ -3,69 +3,65 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     public float playerReach = 3f;
-    Interactable currentInteractable;
+    public bool interactionLocked = false;
+
+    private IInteractable currentInteractable;
 
     void Update()
+{
+    if (interactionLocked)
     {
-        CheckInteraction();
-
-        if (Input.GetKeyDown(KeyCode.E) && currentInteractable != null)
-        {
-            currentInteractable.Interact();
-        }
+        HudController.instance.DisableInteractionText();
+        return;
     }
 
-    void CheckInteraction()
+    CheckInteraction();
+
+    if (Input.GetKeyDown(KeyCode.E) && currentInteractable != null)
     {
-        RaycastHit hit;
+        HudController.instance.DisableInteractionText();
+        currentInteractable.Interact();
+    }
+}
 
-        Ray ray = new Ray(
-            Camera.main.transform.position,
-            Camera.main.transform.forward
-        );
+    void CheckInteraction()
+{
+    RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, playerReach))
+    Ray ray = new Ray(
+        Camera.main.transform.position,
+        Camera.main.transform.forward
+    );
+
+    if (Physics.Raycast(ray, out hit, playerReach))
+    {
+        FoodInteractable food = hit.collider.GetComponentInParent<FoodInteractable>();
+        MirrorInteractable mirror = hit.collider.GetComponentInParent<MirrorInteractable>();
+
+        if (food != null)
         {
-            if (hit.collider.CompareTag("Interactable"))
-            {
-                Interactable newInteractable =
-                    hit.collider.GetComponent<Interactable>();
+            currentInteractable = food;
 
-                if (currentInteractable && newInteractable != currentInteractable)
-                {
-                    currentInteractable.DisableOutline();
-                }
+            HudController.instance.EnableInteractionText("Eat");
+        }
+        else if (mirror != null)
+        {
+            currentInteractable = mirror;
 
-                if (newInteractable.enabled)
-                {
-                    SetNewCurrentInteractable(newInteractable);
-                }
-            }
-            else
-            {
-                DisableCurrentInteractable();
-            }
+            HudController.instance.EnableInteractionText("Look in the mirror");
         }
         else
         {
-            DisableCurrentInteractable();
-        }
-    }
-
-    void SetNewCurrentInteractable(Interactable newInteractable)
-    {
-        currentInteractable = newInteractable;
-        currentInteractable.EnableOutline();
-        HudController.instance.EnableInteractionText(currentInteractable.message);
-    }
-
-    void DisableCurrentInteractable()
-    {
-        HudController.instance.DisableInteractionText();
-        if (currentInteractable)
-        {
-            currentInteractable.DisableOutline();
             currentInteractable = null;
+
+            HudController.instance.DisableInteractionText();
         }
     }
+    else
+    {
+        currentInteractable = null;
+
+        HudController.instance.DisableInteractionText();
+    }
+}
 }
