@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Bedroom.unity
     guid: caef348c49a3054429df0300633df1e5
+  - enabled: 1
+    path: Assets/Scenes/Body.unity
+    guid: 44207c249b34cc84fa6ef491d8ca060d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

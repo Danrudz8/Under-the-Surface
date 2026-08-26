@@ -8,60 +8,83 @@ public class PlayerInteraction : MonoBehaviour
     private IInteractable currentInteractable;
 
     void Update()
-{
-    if (interactionLocked)
     {
-        HudController.instance.DisableInteractionText();
-        return;
-    }
+        if (interactionLocked)
+        {
+            if (HudController.instance != null)
+            {
+                HudController.instance.DisableInteractionText();
+            }
 
-    CheckInteraction();
+            return;
+        }
 
-    if (Input.GetKeyDown(KeyCode.E) && currentInteractable != null)
-    {
-        HudController.instance.DisableInteractionText();
-        currentInteractable.Interact();
+        CheckInteraction();
+
+        if (Input.GetKeyDown(KeyCode.E) && currentInteractable != null)
+        {
+            if (HudController.instance != null)
+            {
+                HudController.instance.DisableInteractionText();
+            }
+
+            currentInteractable.Interact();
+        }
     }
-}
 
     void CheckInteraction()
-{
-    RaycastHit hit;
-
-    Ray ray = new Ray(
-        Camera.main.transform.position,
-        Camera.main.transform.forward
-    );
-
-    if (Physics.Raycast(ray, out hit, playerReach))
     {
-        FoodInteractable food = hit.collider.GetComponentInParent<FoodInteractable>();
-        MirrorInteractable mirror = hit.collider.GetComponentInParent<MirrorInteractable>();
+        RaycastHit hit;
 
-        if (food != null)
+        Ray ray = new Ray(
+            Camera.main.transform.position,
+            Camera.main.transform.forward
+        );
+
+        if (Physics.Raycast(ray, out hit, playerReach))
         {
-            currentInteractable = food;
+            FoodInteractable food =
+                hit.collider.GetComponentInParent<FoodInteractable>();
 
-            HudController.instance.EnableInteractionText("Eat");
-        }
-        else if (mirror != null)
-        {
-            currentInteractable = mirror;
+            MirrorInteractable mirror =
+                hit.collider.GetComponentInParent<MirrorInteractable>();
 
-            HudController.instance.EnableInteractionText("Look in the mirror");
+            if (food != null)
+            {
+                currentInteractable = food;
+
+                if (HudController.instance != null)
+                {
+                    HudController.instance.EnableInteractionText("Eat");
+                }
+            }
+            else if (mirror != null)
+            {
+                currentInteractable = mirror;
+
+                if (HudController.instance != null)
+                {
+                    HudController.instance.EnableInteractionText("Look in the mirror");
+                }
+            }
+            else
+            {
+                currentInteractable = null;
+
+                if (HudController.instance != null)
+                {
+                    HudController.instance.DisableInteractionText();
+                }
+            }
         }
         else
         {
             currentInteractable = null;
 
-            HudController.instance.DisableInteractionText();
+            if (HudController.instance != null)
+            {
+                HudController.instance.DisableInteractionText();
+            }
         }
     }
-    else
-    {
-        currentInteractable = null;
-
-        HudController.instance.DisableInteractionText();
-    }
-}
 }
