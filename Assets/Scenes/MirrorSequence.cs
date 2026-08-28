@@ -36,6 +36,7 @@ public class MirrorSequence : MonoBehaviour
             "I should make smart food choices.";
 
         yield return new WaitForSeconds(textTime);
+        BedroomProgress.mirrorChecked = true;
 
         // Change objective
         objectiveText.text = "Select your food wisely";

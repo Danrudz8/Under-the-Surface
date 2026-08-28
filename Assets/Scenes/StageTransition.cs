@@ -12,16 +12,18 @@ public class StageTransition : MonoBehaviour
     private bool hasTriggered = false;
 
     private void OnTriggerEnter(Collider other)
-    {
-        if (hasTriggered)
-            return;
+{
+    Debug.Log("TRIGGER HIT BY: " + other.name);
 
-        if (other.CompareTag("Player"))
-        {
-            hasTriggered = true;
-            StartCoroutine(Transition(other.transform));
-        }
+    if (hasTriggered)
+        return;
+
+    if (other.CompareTag("Player"))
+    {
+        hasTriggered = true;
+        StartCoroutine(Transition(other.transform));
     }
+}
 
     IEnumerator Transition(Transform player)
     {
@@ -68,5 +70,7 @@ public class StageTransition : MonoBehaviour
         }
 
         fadeScreen.alpha = 0f;
+
+        
     }
 }

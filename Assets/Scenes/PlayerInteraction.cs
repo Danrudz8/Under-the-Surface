@@ -11,6 +11,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (interactionLocked)
         {
+            currentInteractable = null;
+
             if (HudController.instance != null)
             {
                 HudController.instance.DisableInteractionText();
@@ -46,6 +48,9 @@ public class PlayerInteraction : MonoBehaviour
             FoodInteractable food =
                 hit.collider.GetComponentInParent<FoodInteractable>();
 
+            FinalMirrorEnding finalMirror =
+                hit.collider.GetComponentInParent<FinalMirrorEnding>();
+
             MirrorInteractable mirror =
                 hit.collider.GetComponentInParent<MirrorInteractable>();
 
@@ -55,7 +60,27 @@ public class PlayerInteraction : MonoBehaviour
 
                 if (HudController.instance != null)
                 {
-                    HudController.instance.EnableInteractionText("Eat");
+                    if (!BedroomProgress.mirrorChecked)
+                    {
+                        HudController.instance.EnableInteractionText(
+                            "Look in the mirror first"
+                        );
+                    }
+                    else
+                    {
+                        HudController.instance.EnableInteractionText("Eat");
+                    }
+                }
+            }
+            else if (finalMirror != null)
+            {
+                currentInteractable = finalMirror;
+
+                if (HudController.instance != null)
+                {
+                    HudController.instance.EnableInteractionText(
+                        "Look at yourself"
+                    );
                 }
             }
             else if (mirror != null)
@@ -64,7 +89,9 @@ public class PlayerInteraction : MonoBehaviour
 
                 if (HudController.instance != null)
                 {
-                    HudController.instance.EnableInteractionText("Look in the mirror");
+                    HudController.instance.EnableInteractionText(
+                        "Look in the mirror"
+                    );
                 }
             }
             else
